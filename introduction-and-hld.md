@@ -1,12 +1,11 @@
-# A journey into containerizing my Home IoT network
+# A journey into containerizing my Home IoT network <!-- omit in toc -->
 
 ## Table of Contents <!-- omit in toc -->
-- [A journey into containerizing my Home IoT network](#a-journey-into-containerizing-my-home-iot-network)
-  - [The idea](#the-idea)
-  - [How to keep everything running?](#how-to-keep-everything-running)
-  - [What I want to migrate](#what-i-want-to-migrate)
-  - [High Level design](#high-level-design)
-  - [A lot of work hey! Where do you start?](#a-lot-of-work-hey-where-do-you-start)
+- [The idea](#the-idea)
+- [How to keep everything running?](#how-to-keep-everything-running)
+- [What I want to migrate](#what-i-want-to-migrate)
+- [High Level design](#high-level-design)
+- [A lot of work hey! Where do you start?](#a-lot-of-work-hey-where-do-you-start)
 
 ## The idea
 

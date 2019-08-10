@@ -1,4 +1,16 @@
-# Install and harden Debian 10 to build a Docker host
+# Install and harden Debian 10 to build a Docker host <!-- omit in toc -->
+
+## Table of Contents <!-- omit in toc -->
+- [Minimal server installation on Intel® NUC Kit](#minimal-server-installation-on-intel%c2%ae-nuc-kit)
+- [First install Vim!](#first-install-vim)
+- [Set a static IP address and correct DNS server](#set-a-static-ip-address-and-correct-dns-server)
+- [Granting my personal user administrative privileges](#granting-my-personal-user-administrative-privileges)
+- [Configure a basic firewall](#configure-a-basic-firewall)
+- [Set up SSH keys for easy and secure remote access](#set-up-ssh-keys-for-easy-and-secure-remote-access)
+  - [Create the RSA key pair](#create-the-rsa-key-pair)
+  - [Copy the public key to the server](#copy-the-public-key-to-the-server)
+  - [Disable password authentication the server](#disable-password-authentication-the-server)
+  - [Disable SSH login for the root user](#disable-ssh-login-for-the-root-user)
 
 In part 1 of my journey into containerizing my Home IoT network I sketched my IoT landscape and what it would be when it is all containerized. In this article I write about configuring the system for optimal use and securing (hardening) the default Debian 10 installation for remote access with SSH.
 

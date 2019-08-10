@@ -78,7 +78,7 @@ In part 1 of my journey into containerizing my Home IoT network I sketched my Io
 
 I assume you know how you install Debian. Remember to use a strong root and user password. I installed Debian 10 in text mode and only selected the packages `SSH server` and `standard system utilities` to get a minimal server system.
 
-![minimal server install](debian-package-selection.png)
+![minimal server install](img/debian-package-selection.png)
 
 Note: I have an Intel® NUC Kit NUC6i5SYB, and you have to separately download the Wi-Fi drivers. As I connect my NUC with the LAN interface to the network I disabled Wi-Fi (and bluetooth) in the BIOS.
 
@@ -118,7 +118,7 @@ Running a firewall on every server is a best practice. I use the UFW firewall to
 
 I want the firewall to allows SSH connections so I can log in from a remote machine. I allow this by typing: `sudo ufw allow OpenSSH` and enable the firewall with the command `sudo ufw enable`. Check if SSH is still allowed by typing: `sudo ufw status`:
 
-![ufw ssh status](debian-ufw-ssh-status.png)
+![ufw ssh status](img/debian-ufw-ssh-status.png)
 
 ## Set up SSH keys for easy and secure remote access
 
@@ -128,7 +128,7 @@ SSH keys are more difficult to hack than passwords and thus are more secure. Unl
 
 If you don't have a key pair yet, create one on your client machine with the command: `ssh-keygen`. By default a *2048-bit* RSA key pair is created.
 
-![ssh-keygen](debian-ssh-keygen.png)
+![ssh-keygen](img/debian-ssh-keygen.png)
 
 ### Copy the public key to the server
 

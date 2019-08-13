@@ -57,6 +57,26 @@ DOCKER_OPTS="--iptables=false"
 
 Restart the Docker daemon with the command `sudo systemctl restart docker`. From now on when deploying a container it will no longer alter iptables and will honor UFW.
 
+## Install Docker Compose
+
+If your Docker application includes more than one container (for example, a webserver and database running in separate containers), building, running, and connecting the containers from separate Dockerfiles is cumbersome and time-consuming. Docker Compose solves this problem by allowing you to use a YAML file to define multi-container apps. You can configure as many containers as you want, how they should be built and connected, and where data should be stored. When the YAML file is complete, you can run a single command to build, run, and configure all of the containers.
+
+Install the latest release from https://github.com/docker/compose/releases (replace 1.24.1 with the lastst)
+
+```
+sudo curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+```
+
+Set the permissions
+
+`sudo chmod +x /usr/local/bin/docker-compose`
+
+## install vscode
+# configure vscode
+# add ssh keys
+
+
+
 ## Get pihole as a first test
 
 Pull the official pihole image:

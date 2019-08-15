@@ -1,23 +1,44 @@
-# Install Docker and use Docker on Debian 10  <!-- omit in toc -->
+# Install and remotely manage Docker with Visual Studio Code  <!-- omit in toc -->
 
 ## Table of Contents <!-- omit in toc -->
-- [vla](#vla)
+- [Intro here](#intro-here)
+- [Install prerequisites](#install-prerequisites)
+- [Install Docker](#install-docker)
+  - [Add the GPG key and Docker repository](#add-the-gpg-key-and-docker-repository)
+  - [Installation](#installation)
+  - [Run the Docker command without using sudo everytime](#run-the-docker-command-without-using-sudo-everytime)
+- [Install Docker Compose](#install-docker-compose)
+- [Install Visual Studio Code](#install-visual-studio-code)
+  - [Windows Subsystem for Linux](#windows-subsystem-for-linux)
+  - [Download and Installation](#download-and-installation)
+  - [Remote - SSH Extention](#remote---ssh-extention)
+  - [Connect Visual Studio Code to the server](#connect-visual-studio-code-to-the-server)
+  - [And now the magic happens!](#and-now-the-magic-happens)
+- [First steps: How to use the Docker command](#first-steps-how-to-use-the-docker-command)
+  - [Docker pull/run](#docker-pullrun)
+  - [Docker compose file](#docker-compose-file)
+- [Docker cheat sheet](#docker-cheat-sheet)
 
 ## Intro here
-Yes, I need to type a catchy introduction!
+Welcome to my third article about my journey into containerizing my Home IoT network. In part 2 I installed Debian 10 on my Intel® NUC Kit and secured remote access with SSH keys. In this article I write about installing Docker (Compose) and connecting Visual Studio Code to my server with Remote-SSH to create a very cool Docker management environment.
 
-## Install prerequisites (which let apt use packages over HTTPS):
+## Install prerequisites
+
+Before installing Docker I have to install some prerequisites to let apt use packages over HTTPS:
 
 `sudo apt install apt-transport-https ca-certificates curl gnupg2 software-properties-common`
 
-## Installing Docker
+## Install Docker
 
-### Get things ready to install
-Now we're going to install Docker from the official repository, but first get the system ready with a couple of commands at the server: 
+Now I'm going to install Docker from the official repository. To be able to do that I first have to: 
 
 * Add the GPG key for the official Docker repository to your system,
 * Add the Docker repository to APT sources,
 * Update the local package database.
+
+### Add the GPG key and Docker repository
+
+Execute the following commands to add the Docker repository to the system:
 
 ```
 $ curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
@@ -25,69 +46,105 @@ $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/de
 $ sudo apt update
 ```
 
-Make sure you are about to install from the Docker repo instead of the default Debian repo with the command:
+I want to make sure that I install Docker from the official repository instead of the default Debian repo with the command:
 
 `apt-cache policy docker-ce`
 
-Notice that *docker-ce* is not installed, but it is candidate for installation from the Docker repository: 
+Notice that *docker-ce* is **not** installed, but it is *candidate for installation* from the Docker repository:
 
 ![docker apt repo](img/docker-apt-repo.png)
 
-### Install Docker
+### Installation
 
-Type the command: `sudo apt install docker-ce` to install Docker. After a while Docker is installed and the daemon started. To check that everything is running type the command: `sudo systemctl status docker`:
+Execute the command: `sudo apt install docker-ce` to install Docker. After a while Docker is installed and the daemon is started. To check that everything is running type the command: `sudo systemctl status docker`:
 
 ![docker running](img/docker-running.png)
 
-## Run the Docker command without using sudo everytime
+As you see, everything is running fine on my system.
 
-Docker runs only as *root* or if the user belongs to the *docker group*. This group is automatically created during installation. I don't want to type *sudo* everytime I run the Docker command so I add my user *joep* to the *docker* group with the command: `sudo usermod -aG docker joep` and log out and back in.
+### Run the Docker command without using sudo everytime
+
+Docker runs only as *root* or if the user belongs to the docker group. This group is automatically created during installation. I don't want to type *sudo* everytime I run the Docker command so I add my user *joep* to the *docker* group with the command: `sudo usermod -aG docker joep` and log out and back in.
 
 Hooray! Docker is installed!
 
-## Fix the Docker and UFW security flaw
-
-Before you grab a beer, Docker has a UFW security flaw by not honoring the UFW rules. 
-
-Edit the file `/etc/default/docker` and add the line:
-
-```
-DOCKER_OPTS="--iptables=false"
-```
-
-Restart the Docker daemon with the command `sudo systemctl restart docker`. From now on when deploying a container it will no longer alter iptables and will honor UFW.
-
 ## Install Docker Compose
 
-If your Docker application includes more than one container (for example, a webserver and database running in separate containers), building, running, and connecting the containers from separate Dockerfiles is cumbersome and time-consuming. Docker Compose solves this problem by allowing you to use a YAML file to define multi-container apps. You can configure as many containers as you want, how they should be built and connected, and where data should be stored. When the YAML file is complete, you can run a single command to build, run, and configure all of the containers.
+Some applications use more than one container (for example, my WordPress site and MariaDB database running in separate containers). I find building and running containers from separate Docker files time-consuming. With Docker Compose you use a YAML file to define (multi-)container applications and I can easily configure the runtime options. I configure all the containers I want from my favorite text editor and run a single `docker-compose up` command to build, configure and spin up all the containers.
 
-Install the latest release from https://github.com/docker/compose/releases (replace 1.24.1 with the lastst)
+I installed the latest release from https://github.com/docker/compose/releases:
 
 ```
 sudo curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 ```
 
-Set the permissions
+At the time of writing this article the latest release is `1.24.1`. Replace the version in the URL if there is a new release when you are configuring your system.
+
+After installation I set *run* permissions on the Docker Compose binary with the command: 
 
 `sudo chmod +x /usr/local/bin/docker-compose`
 
-## install vscode
-# configure vscode
-# add ssh keys
+## Install Visual Studio Code
+
+I hear you thinking... "I want to spin up a container, and see some awesome shizzle!", but first I show you how I set up Visual Studio Code and connect it to my Debian server via SSH to edit Docker (Compose) Files as I work at a local system.
+
+If you are a Vim god and browse the Internet with Browsh, you can skip this chapter, else read further!
+
+### Windows Subsystem for Linux
+
+When you use Windows 10 and don't have the Windows Subsystem for Linux installed you have to install it first. You can find detailed instructions how to install WSL at the [Windows Subsystem for Linux Installation Guide for Windows 10](https://docs.microsoft.com/en-us/windows/wsl/install-win10) from Microsoft.
+
+### Download and Installation
+
+After you installed WSL, download and install Visual Studio Code from: https://code.visualstudio.com/.
+
+### Remote - SSH Extention
+
+Fire up Visual Studio code and from the *Visual Studio Marketplace* install the *[Remote - SSH extention](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)*.
+
+![remote-ssh](img/remote-ssh1.png)
+
+![remote-wsl](img/remote-wsl.png)
+
+Microsoft wrote [an article](https://code.visualstudio.com/docs/remote/wsl) about developing in WSL. It contains extentions for Remote SSH and Containers. For this article only remoting with SSH is needed, but if you want the full package the article is a nice read.
+
+### Connect Visual Studio Code to the server
+
+Press `F1 ` to bring up the *Command Palette* and type in `remote-ssh`:
+
+![remote-ssh](img/remote-ssh2.png)
+
+Choose the option `Remote-SSH: Connect to Host...` and type your `username@hostname` in the box:
+
+![remote-ssh](img/remote-ssh3.png)
+
+A new Visual Studio Code window opens which asks you for the password you added to your SSH key (in part 2 of my Docker series):
+
+![remote-ssh](img/remote-ssh4.png)
+
+When successfully authenticated Visual Studio Code installs VSCode Server into your server's home folder and connects the IDE to it.
+
+### And now the magic happens!
+
+With everything set you are now editing Docker (Compose) files with Visual Studio Code as if you are working local on the server. The remote filesystem is visible in the *Explorer*. With `Ctrl+Shift+\`` you can launch a terminal to run Docker commands! How awesome is this!
+
+![remote-ssh](img/remote-ssh5.png)
+
+## First steps: How to use the Docker command
+
+Before I show you how I migrated my UniFi Controller from a Windows 10 installation to a Docker container I show you some basic Docker commands and pull an image from DockerHub.
+
+### Docker pull/run
+
+### Docker compose file
 
 
-
-## Get pihole as a first test
-
-Pull the official pihole image:
-
-`docker pull pihole/pihole'
 
 
 ## Docker cheat sheet
 | Docker command            | Description                                                                                            |
 |---------------------------|--------------------------------------------------------------------------------------------------------|
-| docker images             | To see the images that have been downloaded to your computer.                                          |
+| docker images             | To see the images that have been downloaded to your server  .                                          |
 | docker search unifi       | Search for UniFi images available on Docker Hub.                                                       |
 | docker pull pihole/pihole | Download the official piHole docker image from DockerHub.                                              |
 | docker run -it unifi      | The combination of the -i and -t switches gives you interactive shell access into the UniFi container. |
@@ -97,6 +154,3 @@ Pull the official pihole image:
 | docker start d42d0bbfbd35 | Start a stopped container.                                                                             |
 | docker stop d42d0bbfbd35  | Stop a container.                                                                                      |
 | docker rm d42d0bbfbd35    | Remove a container                                                                                     |
-
-## Extra's
-`sudo apt install dnsutils`

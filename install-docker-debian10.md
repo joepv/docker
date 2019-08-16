@@ -15,9 +15,8 @@
   - [Connect Visual Studio Code to the server](#connect-visual-studio-code-to-the-server)
   - [And now the magic happens!](#and-now-the-magic-happens)
 - [First steps: How to use the Docker command](#first-steps-how-to-use-the-docker-command)
-  - [Docker pull/run](#docker-pullrun)
-  - [Docker compose file](#docker-compose-file)
-- [Docker cheat sheet](#docker-cheat-sheet)
+  - [Docker cheat sheet](#docker-cheat-sheet)
+- [Kaboom! Docker is installed and the first steps into containerization are made!](#kaboom-docker-is-installed-and-the-first-steps-into-containerization-are-made)
 
 ## Intro here
 Welcome to my third article about my journey into containerizing my Home IoT network. In part 2 I installed Debian 10 on my Intel® NUC Kit and secured remote access with SSH keys. In this article I write about installing Docker (Compose) and connecting Visual Studio Code to my server with Remote-SSH to create a very cool Docker management environment.
@@ -132,25 +131,76 @@ With everything set you are now editing Docker (Compose) files with Visual Studi
 
 ## First steps: How to use the Docker command
 
-Before I show you how I migrated my UniFi Controller from a Windows 10 installation to a Docker container I show you some basic Docker commands and pull an image from DockerHub.
+Before I show you how I migrate my UniFi Controller from a Windows 10 installation to a Docker container I show you some basic Docker commands by pulling an image from DockerHub.
 
-### Docker pull/run
+Pull the Hello World example from DockerHub with the command:
 
-### Docker compose file
+`docker pull hello-world`
+
+![docker-pull](img/docker-pull.png)
+
+After the image is downloaded you can run it:
 
 
+`docker run hello-world`
 
+The Docker container is build and started and shows you the following output:
 
-## Docker cheat sheet
-| Docker command            | Description                                                                                            |
-|---------------------------|--------------------------------------------------------------------------------------------------------|
-| docker images             | To see the images that have been downloaded to your server  .                                          |
-| docker search unifi       | Search for UniFi images available on Docker Hub.                                                       |
-| docker pull pihole/pihole | Download the official piHole docker image from DockerHub.                                              |
-| docker run -it unifi      | The combination of the -i and -t switches gives you interactive shell access into the UniFi container. |
-| docker ps                 | View active containers.                                                                                |
-| docker ps -a              | View all containers.                                                                                   |
-| docker ps -l              | View the last container you added.                                                                     |
-| docker start d42d0bbfbd35 | Start a stopped container.                                                                             |
-| docker stop d42d0bbfbd35  | Stop a container.                                                                                      |
-| docker rm d42d0bbfbd35    | Remove a container                                                                                     |
+```
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+ ```
+
+Hooray! Your Docker installation appears to be working correctly.
+
+With `docker ps` you can see the containers that are running: 
+
+![docker-psl](img/docker-ps.png)
+
+The image `hello world` is not in the list of running containers because it just showed some text and doesn't have a running process.
+
+If you don't want to waste storage space with the `hello-world` example, remove the image with the command:
+
+`docker rmi hello-world`
+
+### Docker cheat sheet
+
+This is the very basic use of Docker commands, I created a cheat sheet with other usefull commands:
+
+| Docker command               | Description                                                                                                               |
+|------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| docker images                | To see the images that have been downloaded to your server.                                                               |
+| docker rmi hello-world       | Remove the hello-world image.                                                                                             |
+| docker search unifi          | Search for UniFi images available on Docker Hub.                                                                          |
+| docker pull pihole/pihole    | Download the official piHole Docker image from DockerHub.                                                                 |
+| docker run -p pihole         | Run an image in detached mode.                                                                                            |
+| docker run -it unifi         | Runs an image, creating a container and changing the terminal to the terminal within the container.                       |
+| docker ps                    | List all running containers.                                                                                              |
+| docker ps -a                 | List all containers (running and not running).                                                                            |
+| docker ps -l                 | View the last container you added.                                                                                        |
+| docker start d42d0bbfbd35    | Start a container.                                                                                                        |
+| docker stop d42d0bbfbd35     | Stop a container.                                                                                                         |
+| docker rm -f d42d0bbfbd35    | Delete a container.                                                                                                       |
+
+## Kaboom! Docker is installed and the first steps into containerization are made!
+
+The next step is migrating my HomeLab IoT services to Docker. Stay tuned for the next article where I write about this process!
+
